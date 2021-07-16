@@ -69,7 +69,7 @@ public class IntList {
         if (L == null) {
             return null;
         }
-        return new IntList(L.first * L.first, squareListRecursive(L.rest));
+        return new IntList(L.first * L.first, squareListRecursive(L.rest)); //6666666
     }
 
     /** DO NOT MODIFY ANYTHING ABOVE THIS LINE! */
@@ -82,7 +82,19 @@ public class IntList {
 
     public static IntList dcatenate(IntList A, IntList B) {
         //TODO:  fill in method
-        return null;
+        if (A == null) {
+            return null;
+        }
+        if (B == null) {
+            return A;
+        }
+
+        IntList L = A;
+        while (L.rest != null) {
+            L = L.rest;
+        }
+        L.rest = B;
+        return A;
     }
 
     /**
@@ -91,7 +103,27 @@ public class IntList {
      */
     public static IntList catenate(IntList A, IntList B) {
         //TODO:  fill in method
-        return null;
+        IntList p = A;
+        if (p == null) {
+            return null;
+        }
+        /** Dealing with IntList A */
+        IntList nL = new IntList(A.first, null);
+        IntList np = nL;
+        p = p.rest;
+        while (p != null) {
+            np.rest = new IntList(p.first, null);
+            np = np.rest;
+        }
+
+        /** Dealing with IntList B */
+        p = B;
+        while (p != null) {
+            np.rest = new IntList(p.first, null);
+            np = np.rest;
+        }
+
+        return nL;
     }
 
 
