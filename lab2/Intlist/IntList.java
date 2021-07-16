@@ -85,9 +85,6 @@ public class IntList {
         if (A == null) {
             return null;
         }
-        if (B == null) {
-            return A;
-        }
 
         IntList L = A;
         while (L.rest != null) {
@@ -114,6 +111,7 @@ public class IntList {
         while (p != null) {
             np.rest = new IntList(p.first, null);
             np = np.rest;
+            p = p.rest;
         }
 
         /** Dealing with IntList B */
@@ -121,6 +119,7 @@ public class IntList {
         while (p != null) {
             np.rest = new IntList(p.first, null);
             np = np.rest;
+            p = p.rest;
         }
 
         return nL;
