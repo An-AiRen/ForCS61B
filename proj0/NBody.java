@@ -14,7 +14,7 @@ public class NBody {
 		Planet[] planets = new Planet[N];
 		for (int i = 0; i < N; i++) {
 			planets[i] = new Planet(origin.readDouble(), origin.readDouble(), origin.readDouble(), 
-				origin.readDouble(), origin.readDouble(), "images/" + origin.readString());
+				origin.readDouble(), origin.readDouble(), origin.readString());
 		}
 		return planets;
 	}
