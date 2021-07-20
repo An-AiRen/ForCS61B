@@ -21,6 +21,14 @@ public class ArrayDeque<T> {
         return index;
     }
 
+    private int minuxOne(int index, int length) {
+        if (index == 0) {
+            index = length - 1;
+        } else {
+            index -= 1;
+        }
+        return index;
+    }
     /** to add the index of array. if current index is length - 1, index plusOne should be 0. */
     private int plusOne(int index) {
         if (index == items.length - 1) {
@@ -38,17 +46,6 @@ public class ArrayDeque<T> {
             index += 1;
         }
         return index;
-    }
-
-    /** to compute array indices according to given index */
-    private int findPos(int index) {
-        int pos;
-        if (start + index >= items.length) {
-            pos = index + start - items.length;
-        } else {
-            pos = start + index;
-        }
-        return pos;
     }
 
     /** Resizes the underlying array to the target capacity. That's tricky! */
@@ -69,7 +66,7 @@ public class ArrayDeque<T> {
             a[nindex] = items[i];
             nindex = plusOne(nindex, capacity);
         }
-
+        end = minuxOne(nindex, capacity);
         items = a;
     }
 
