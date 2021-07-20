@@ -21,7 +21,7 @@ public class ArrayDeque<T> {
         return index;
     }
 
-    private int minuxOne(int index, int length) {
+    private int minusOne(int index, int length) {
         if (index == 0) {
             index = length - 1;
         } else {
@@ -52,21 +52,13 @@ public class ArrayDeque<T> {
     private void resize(int capacity) {
         T[] a = (T[]) new Object[capacity];
         int nindex = start;
-//        if (size <= capacity - start) {
-//            System.arraycopy(items, start, a, start, items.length - start);
-//            System.arraycopy(items, 0, a, items.length, end + 1);
-//            end = start + size - 1;
-//        } else {
-//            System.arraycopy(items, start, a, start, items.length - start);
-//            System.arraycopy(items, 0, a, items.length, capacity - items.length);
-//            System.arraycopy(items, capacity - items.length, a, 0, end - capacity + items.length + 1);
-//            end = size + start - capacity;
-//        }
+
         for (int i = start; i != end; i = plusOne(i)) {
             a[nindex] = items[i];
             nindex = plusOne(nindex, capacity);
         }
-        end = minuxOne(nindex, capacity);
+        a[nindex] = items[end];
+        end = nindex;
         items = a;
     }
 
@@ -156,9 +148,11 @@ public class ArrayDeque<T> {
 
         int i;
         int count = 0;
+
         for (i = start; i != end && count < index; i = plusOne(i)) {
             count += 1;
         }
+
         return items[i];
     }
 }
