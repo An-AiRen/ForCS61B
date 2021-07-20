@@ -30,6 +30,7 @@ public class ArrayDeque<T> {
         }
         return index;
     }
+
     /** to add the index of array. if current index is length - 1,
      * index plusOne should be 0. */
     private int plusOne(int index) {
@@ -41,7 +42,7 @@ public class ArrayDeque<T> {
         return index;
     }
 
-    private  int plusOne(int index, int length) {
+    private int plusOne(int index, int length) {
         if (index == length - 1) {
             index = 0;
         } else {
@@ -50,7 +51,8 @@ public class ArrayDeque<T> {
         return index;
     }
 
-    /** Resizes the underlying array to the target capacity. That's tricky! */
+    /** Resizes the underlying array to the target capacity.
+     * That's tricky! */
     private void resize(int capacity) {
         T[] a = (T[]) new Object[capacity];
         int nindex = start;
@@ -65,7 +67,7 @@ public class ArrayDeque<T> {
     }
 
     /** to adjust the usage factor of the array */
-    private  void  adjustUsageFactor() {
+    private void adjustUsageFactor() {
         /** there is no need to adjust if length is less than 16 */
         if (items.length < 8) {
             return;
@@ -149,7 +151,6 @@ public class ArrayDeque<T> {
         if (index >= size || index < 0) {
             return null;
         }
-
         int i;
         int count = 0;
 
