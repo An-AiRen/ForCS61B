@@ -11,7 +11,8 @@ public class ArrayDeque<T> {
         end = 3;
     }
 
-    /** to minus the index of array. if current index is 0, index minusOne should be items.length - 1. */
+    /** to minus the index of array. if current index is 0,
+     * index minusOne should be items.length - 1. */
     private int minusOne(int index) {
         if (index == 0) {
             index = items.length - 1;
@@ -29,7 +30,8 @@ public class ArrayDeque<T> {
         }
         return index;
     }
-    /** to add the index of array. if current index is length - 1, index plusOne should be 0. */
+    /** to add the index of array. if current index is length - 1,
+     * index plusOne should be 0. */
     private int plusOne(int index) {
         if (index == items.length - 1) {
             index = 0;
@@ -65,11 +67,11 @@ public class ArrayDeque<T> {
     /** to adjust the usage factor of the array */
     private  void  adjustUsageFactor() {
         /** there is no need to adjust if length is less than 16 */
-        if (items.length < 16) {
+        if (items.length < 8) {
             return;
         } else {
             if (size < items.length / 4) {
-                resize(2 * size);
+                resize( size * 2);
             }
         }
     }
@@ -79,6 +81,7 @@ public class ArrayDeque<T> {
         if (size == items.length) {
             resize(size * 2);
         }
+        adjustUsageFactor();
 
         start = minusOne(start);
         items[start] = item;
@@ -90,6 +93,7 @@ public class ArrayDeque<T> {
         if (size == items.length) {
             resize(size * 2);
         }
+        adjustUsageFactor();
 
         end = plusOne(end);
         items[end] = item;
