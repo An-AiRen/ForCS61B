@@ -11,8 +11,7 @@ public class ArrayDeque<T> {
         end = 3;
     }
 
-    /** to minus the index of array. if current index is 0,
-     * index minusOne should be items.length - 1. */
+    /** to minus the index of array. if current index is 0, index minusOne should be items.length - 1. */
     private int minusOne(int index) {
         if (index == 0) {
             index = items.length - 1;
@@ -30,9 +29,7 @@ public class ArrayDeque<T> {
         }
         return index;
     }
-
-    /** to add the index of array. if current index is length - 1,
-     * index plusOne should be 0. */
+    /** to add the index of array. if current index is length - 1, index plusOne should be 0. */
     private int plusOne(int index) {
         if (index == items.length - 1) {
             index = 0;
@@ -42,7 +39,7 @@ public class ArrayDeque<T> {
         return index;
     }
 
-    private int plusOne(int index, int length) {
+    private  int plusOne(int index, int length) {
         if (index == length - 1) {
             index = 0;
         } else {
@@ -51,8 +48,7 @@ public class ArrayDeque<T> {
         return index;
     }
 
-    /** Resizes the underlying array to the target capacity.
-     * That's tricky! */
+    /** Resizes the underlying array to the target capacity. That's tricky! */
     private void resize(int capacity) {
         T[] a = (T[]) new Object[capacity];
         int nindex = start;
@@ -67,13 +63,13 @@ public class ArrayDeque<T> {
     }
 
     /** to adjust the usage factor of the array */
-    private void adjustUsageFactor() {
+    private  void  adjustUsageFactor() {
         /** there is no need to adjust if length is less than 16 */
-        if (items.length < 8) {
+        if (items.length < 16) {
             return;
         } else {
             if (size < items.length / 4) {
-                resize( size * 2);
+                resize(2 * size);
             }
         }
     }
@@ -83,7 +79,6 @@ public class ArrayDeque<T> {
         if (size == items.length) {
             resize(size * 2);
         }
-        adjustUsageFactor();
 
         start = minusOne(start);
         items[start] = item;
@@ -95,7 +90,6 @@ public class ArrayDeque<T> {
         if (size == items.length) {
             resize(size * 2);
         }
-        adjustUsageFactor();
 
         end = plusOne(end);
         items[end] = item;
@@ -151,6 +145,7 @@ public class ArrayDeque<T> {
         if (index >= size || index < 0) {
             return null;
         }
+
         int i;
         int count = 0;
 
@@ -161,4 +156,3 @@ public class ArrayDeque<T> {
         return items[i];
     }
 }
-
