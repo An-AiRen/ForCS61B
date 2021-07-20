@@ -1,8 +1,8 @@
 public class LinkedListDeque<T> {
     public class ItemNode {
-        public ItemNode prev;
-        public T item;
-        public ItemNode next;
+        private ItemNode prev;
+        private T item;
+        private ItemNode next;
 
         public ItemNode(ItemNode p, T i, ItemNode n) {
             prev = p;
@@ -68,26 +68,24 @@ public class LinkedListDeque<T> {
 
     /** Removes and returns the item at the front of the deque. if no such item, return null */
     public T removeFirst() {
-        size -= 1;
-
         ItemNode first = sentinel.next;
         if (first == null) {
             return null;
         } else {
             sentinel.next = first.next;
+            size -= 1;
             return first.item;
         }
     }
 
     /** Removes and returns the item at the back of the deque. if no such item, return null */
     public T removeLast() {
-        size += 1;
-
         ItemNode last = sentinel.prev;
         if (last == null) {
             return null;
         } else {
             sentinel.prev = last.prev;
+            size -= 1;
             return last.item;
         }
     }
@@ -119,3 +117,4 @@ public class LinkedListDeque<T> {
         return getNode(sentinel.next, 0, index);
     }
 }
+
