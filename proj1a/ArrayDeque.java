@@ -21,14 +21,6 @@ public class ArrayDeque<T> {
         return index;
     }
 
-    private int minusOne(int index, int length) {
-        if (index == 0) {
-            index = length - 1;
-        } else {
-            index -= 1;
-        }
-        return index;
-    }
     /** to add the index of array. if current index is length - 1, index plusOne should be 0. */
     private int plusOne(int index) {
         if (index == items.length - 1) {
@@ -65,7 +57,7 @@ public class ArrayDeque<T> {
     /** to adjust the usage factor of the array */
     private  void  adjustUsageFactor() {
         /** there is no need to adjust if length is less than 16 */
-        if (items.length < 16) {
+        if (items.length < 8) {
             return;
         } else {
             if (size < items.length / 4) {

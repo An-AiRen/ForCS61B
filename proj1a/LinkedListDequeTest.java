@@ -1,6 +1,6 @@
 /** Performs some basic linked list tests. */
 public class LinkedListDequeTest {
-	
+
 	/* Utility method for printing out empty checks. */
 	public static boolean checkEmpty(boolean expected, boolean actual) {
 		if (expected != actual) {
@@ -61,7 +61,8 @@ public class LinkedListDequeTest {
 
 	}
 
-	/** Adds an item, then removes an item, and ensures that dll is empty afterwards. */
+	/** Adds an item, then removes an item, 
+	 *  and ensures that dll is empty afterwards. */
 	public static void addRemoveTest() {
 
 		System.out.println("Running add/remove test.");
