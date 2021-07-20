@@ -57,7 +57,7 @@ public class ArrayDeque<T> {
     /** to adjust the usage factor of the array */
     private  void  adjustUsageFactor() {
         /** there is no need to adjust if length is less than 16 */
-        if (items.length < 8) {
+        if (items.length < 16) {
             return;
         } else {
             if (size < items.length / 4) {
