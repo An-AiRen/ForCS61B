@@ -11,8 +11,37 @@ public class ArrayDeque<T> {
         end = 3;
     }
 
-    /** to compute array indices according to given index */
+    /** to minus the index of array. if current index is 0, index minusOne should be items.length - 1. */
     private int minusOne(int index) {
+        if (index == 0) {
+            index = items.length - 1;
+        } else {
+            index -= 1;
+        }
+        return index;
+    }
+
+    /** to add the index of array. if current index is length - 1, index plusOne should be 0. */
+    private int plusOne(int index) {
+        if (index == items.length - 1) {
+            index = 0;
+        } else {
+            index += 1;
+        }
+        return index;
+    }
+
+    private  int plusOne(int index, int length) {
+        if (index == length - 1) {
+            index = 0;
+        } else {
+            index += 1;
+        }
+        return index;
+    }
+
+    /** to compute array indices according to given index */
+    private int findPos(int index) {
         int pos;
         if (start + index >= items.length) {
             pos = index + start - items.length;
@@ -25,16 +54,20 @@ public class ArrayDeque<T> {
     /** Resizes the underlying array to the target capacity. That's tricky! */
     private void resize(int capacity) {
         T[] a = (T[]) new Object[capacity];
-
-        if (size <= capacity - start) {
-            System.arraycopy(items, start, a, start, items.length - start);
-            System.arraycopy(items, 0, a, items.length, end + 1);
-            end = start + size - 1;
-        } else {
-            System.arraycopy(items, start, a, start, items.length - start);
-            System.arraycopy(items, 0, a, items.length, capacity - items.length);
-            System.arraycopy(items, capacity - items.length, a, 0, end - capacity + items.length + 1);
-            end = size + start - capacity;
+        int nindex = start;
+//        if (size <= capacity - start) {
+//            System.arraycopy(items, start, a, start, items.length - start);
+//            System.arraycopy(items, 0, a, items.length, end + 1);
+//            end = start + size - 1;
+//        } else {
+//            System.arraycopy(items, start, a, start, items.length - start);
+//            System.arraycopy(items, 0, a, items.length, capacity - items.length);
+//            System.arraycopy(items, capacity - items.length, a, 0, end - capacity + items.length + 1);
+//            end = size + start - capacity;
+//        }
+        for (int i = start; i != end; i = plusOne(i)) {
+            a[nindex] = items[i];
+            nindex = plusOne(nindex, capacity);
         }
 
         items = a;
@@ -46,9 +79,8 @@ public class ArrayDeque<T> {
         if (items.length < 16) {
             return;
         } else {
-            double f = (double)size / items.length;
-            if (f < 0.25) {
-                resize(2 * size);                    //need to be adjusted
+            if (size < items.length / 4) {
+                resize(2 * size);
             }
         }
     }
@@ -59,11 +91,7 @@ public class ArrayDeque<T> {
             resize(size * 2);
         }
 
-        if (start == 0) {
-            start = items.length - 1;
-        } else {
-            start -= 1;
-        }
+        start = minusOne(start);
         items[start] = item;
         size += 1;
     }
@@ -74,11 +102,7 @@ public class ArrayDeque<T> {
             resize(size * 2);
         }
 
-        if (end == items.length - 1) {
-            end = 0;
-        } else {
-            end += 1;
-        }
+        end = plusOne(end);
         items[end] = item;
         size += 1;
     }
@@ -90,60 +114,55 @@ public class ArrayDeque<T> {
     public int size() {
         return size;
     }
+
     public void printDeque() {
-        if (start <= end) {
-            for (int i = start; i <= end; i++) {
-                System.out.print(items[i] + " ");
-            }
-        } else {
-            for (int i = start; i < items.length; i++) {
-                System.out.print(items[i] + " ");
-            }
-            for (int i = 0; i <= end; i++) {
-                System.out.print(items[i] + " ");
-            }
+        for (int i = start; i != end; i = plusOne(i)) {
+            System.out.print(items[i] + " ");
         }
+        System.out.println();
     }
 
     public T removeFirst() {
-        T first = items[start];
-        items[start] = null;
-
-        if (start == items.length - 1) {
-            start = 0;
-        } else {
-            start += 1;
+        if (size == 0) {
+            return null;
         }
+
+        T first = items[start];
+
+        items[start] = null;
+        start = plusOne(start);
         size -= 1;
+
         adjustUsageFactor();
         return first;
     }
 
     public T removeLast() {
-        T last = items[end];
-        items[end] = null;
-
-        if (end == 0) {
-            end = items.length - 1;
-        } else {
-            end -= 1;
+        if (size == 0) {
+            return null;
         }
+
+        T last = items[end];
+
+        items[end] = null;
+        end = minusOne(end);
         size -= 1;
+
         adjustUsageFactor();
         return last;
     }
 
     public T get(int index) {
-        if (index >= size) {
+        if (index >= size || index < 0) {
             return null;
         }
 
-        int pos = minusOne(index);
-        if (pos > end) {
-            return null;
-        } else {
-            return items[pos];
+        int i;
+        int count = 0;
+        for (i = start; i != end && count < index; i = plusOne(i)) {
+            count += 1;
         }
+        return items[i];
     }
 }
 
