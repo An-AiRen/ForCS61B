@@ -16,32 +16,29 @@ public class LinkedListDeque<T> {
 
     public LinkedListDeque() {
         sentinel = new ItemNode(null, null, null);
+        sentinel.prev = sentinel;
+        sentinel.next = sentinel;
+
         size = 0;
     }
 
     /** Adds an item of type T to the front of the deque */
     public void addFirst(T item) {
         ItemNode p = new ItemNode(sentinel, item, sentinel.next);
-        if (size == 0) {
-            sentinel.next = p;
-            sentinel.prev = p;
-        } else {
-            sentinel.next.prev = p;
-            sentinel.next = sentinel.next.prev;
-        }
+
+        sentinel.next.prev = p;
+        sentinel.next = sentinel.next.prev;
+
         size += 1;
     }
 
     /** Adds an item of type T to the back of the deque */
     public void addLast(T item) {
         ItemNode p = new ItemNode(sentinel.prev, item, sentinel);
-        if (size == 0) {
-            sentinel.prev = p;
-            sentinel.next = p;
-        } else {
-            sentinel.prev.next = p;
-            sentinel.prev = sentinel.prev.next;
-        }
+
+        sentinel.prev.next = p;
+        sentinel.prev = sentinel.prev.next;
+
         size += 1;
     }
 
@@ -69,9 +66,10 @@ public class LinkedListDeque<T> {
     /** Removes and returns the item at the front of the deque. if no such item, return null */
     public T removeFirst() {
         ItemNode first = sentinel.next;
-        if (first == null) {
+        if (first == sentinel) {
             return null;
         } else {
+            first.next.prev = sentinel;
             sentinel.next = first.next;
             size -= 1;
             return first.item;
@@ -81,9 +79,10 @@ public class LinkedListDeque<T> {
     /** Removes and returns the item at the back of the deque. if no such item, return null */
     public T removeLast() {
         ItemNode last = sentinel.prev;
-        if (last == null) {
+        if (last == sentinel) {
             return null;
         } else {
+            last.prev.next = sentinel;
             sentinel.prev = last.prev;
             size -= 1;
             return last.item;
