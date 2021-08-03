@@ -13,7 +13,7 @@ public class Percolation {
     /** create N-by-N grid, with all sites initial */
     public Percolation(int N) {
         if (N <= 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("N must greater than 0!");
         }
 
         gLen = N;
@@ -45,7 +45,8 @@ public class Percolation {
             return;
         }
         sites[row][col] = 1;
-        merge(row, col);
+        if (gLen > 1)
+            merge(row, col);
         openSites += 1;
     }
 
@@ -56,7 +57,8 @@ public class Percolation {
 
     /** is the site (row, col) full? */
     public boolean isFull(int row, int col) {
-        return possiblePath.connected(xyTo1D(row, col), topS);
+        return possiblePath.connected(xyTo1D(row, col), topS) ||
+                (percolates() && possiblePath.connected(xyTo1D(row, col), bottomS));
     }
 
     /** number of open sites */
@@ -113,14 +115,12 @@ public class Percolation {
     }
 
     public static void main(String[] args) {
-        Percolation p = new Percolation(4);
+        Percolation p = new Percolation(2);
 
-        p.open(2, 3);
-        System.out.println(p.isOpen(2, 3));
-        p.open(1, 3);
-        p.open(1, 2);
-        p.open(0, 2);
-        p.open(3, 3);
+        p.open(0, 0);
+        p.open(0, 1);
+        p.open(1, 0);
+        p.open(1, 1);
         System.out.println(p.percolates());
     }
 }

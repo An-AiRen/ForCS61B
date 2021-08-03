@@ -48,9 +48,9 @@ public class PercolationStats {
         double sumSquare = 0;
         double m = mean();
         for (double sample : pThreshold) {
-            sumSquare += Math.pow(sample - m, 2);
+            sumSquare += (sample - m) * (sample - m);
         }
-        return sumSquare / (double)(pindex - 1);
+        return sumSquare / (pindex - 1);
     }
 
     /** low endpoint of 95% confidence interval */
