@@ -12,6 +12,22 @@ public class OomageTestUtility {
          * and ensure that no bucket has fewer than N / 50
          * Oomages and no bucket has more than N / 2.5 Oomages.
          */
-        return false;
+        int[] bucket = new int[M]; //store the number of oomage whose hashCode points to certain index.
+        int size = oomages.size();
+
+        /** Initialize buckets to 0. */
+        for (int i = 0; i < M; i += 1) {
+            bucket[i] = 0;
+        }
+        for (Oomage o : oomages) {
+            int index = (o.hashCode() & 0x7FFFFFFF) % M;
+            bucket[index] += 1;
+        }
+        for (int i = 0; i < M; i += 1) {
+            if (bucket[i] <= size / 50 || bucket[i] >= size / 2.5) {
+                return false;
+            }
+        }
+        return true;
     }
 }
