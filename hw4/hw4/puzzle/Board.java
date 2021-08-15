@@ -121,6 +121,9 @@ public class Board implements WorldState{
         }
 
         Board e = (Board) y;
+        if (this.size() != e.size()) {
+            return false;
+        }
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N;j++) {
                 if (tileAt(i, j) != e.tileAt(i, j)) {
@@ -146,4 +149,6 @@ public class Board implements WorldState{
         s.append("\n");
         return s.toString();
     }
+
+    private
 }
