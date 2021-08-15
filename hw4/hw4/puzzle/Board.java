@@ -149,6 +149,4 @@ public class Board implements WorldState{
         s.append("\n");
         return s.toString();
     }
-
-    private
 }
