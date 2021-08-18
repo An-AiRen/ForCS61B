@@ -70,17 +70,18 @@ public class MergeSort {
     /** Returns a Queue that contains the given items sorted from least to greatest. */
     public static <Item extends Comparable> Queue<Item> mergeSort(
             Queue<Item> items) {
-        Queue<Queue<Item>> singles = makeSingleItemQueues(items);
-        Queue<Item> after = new Queue<>();
-        while (!singles.isEmpty()) {
-            Queue<Item> q = singles.dequeue();
-            if (after.isEmpty()) {
-                after.enqueue(q.peek());
-            } else {
-                after = mergeSortedQueues(after, q);
-            }
+        if (items.size() <= 1) {
+            return items;
         }
-        return after;
+        Queue<Queue<Item>> singles = makeSingleItemQueues(items);
+        Queue<Item> q1;
+        Queue<Item> q2;
+        while (singles.size() > 1) {
+            q1 = singles.dequeue();
+            q2 = singles.dequeue();
+            singles.enqueue(mergeSortedQueues(q1, q2));
+        }
+        return singles.peek();
     }
 
     public static void main(String[] args) {
@@ -88,6 +89,7 @@ public class MergeSort {
         students.enqueue("Alice");
         students.enqueue("Vanessa");
         students.enqueue("Ethan");
+        students.enqueue("A");
         System.out.println(students);
         Queue<String> result = mergeSort(students);
         System.out.println(result);
