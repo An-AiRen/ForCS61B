@@ -167,17 +167,4 @@ public class Rasterer {
         }
         return query;
     }
-
-//    public static void main(String[] args) {
-//        Map<String, Double> input = new HashMap<>();
-//        Rasterer r = new Rasterer();
-//        input.put("lrlon", -122.24053369025242);
-//        input.put("ullon", -122.24163047377972);
-//        input.put("ullat", 37.87655856892288);
-//        input.put("lrlat", 37.87548268822065);
-//        input.put("w", 892.0);
-//        input.put("h", 875.0);
-//        Map<String, Object> results = r.getMapRaster(input);
-//        System.out.println(results);
-//    }
 }

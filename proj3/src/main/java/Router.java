@@ -1,5 +1,6 @@
-import java.util.List;
-import java.util.Objects;
+//import jdk.javadoc.internal.doclets.formats.html.Navigation;
+
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,6 +13,32 @@ import java.util.regex.Pattern;
  * down to the priority you use to order your vertices.
  */
 public class Router {
+    static Map<Long, Double> disToStart = new HashMap<>(); //store the distance to start from each.
+    static Map<Long, Long> edgeTo = new HashMap<>(); //store the previous node.
+    static GraphDB graph;
+
+    static long start;
+    static long end;
+
+    /** Comparator for MinPQ. */
+    private static class astar<Long> implements Comparator<Long> {
+        @Override
+        public int compare(Long o1, Long o2) {
+            double disTo1 = disToStart.get(o1);
+            double disTo2 = disToStart.get(o2);
+
+            double c = (disTo1 + graph.distance((long)o1, end)) -
+                    (disTo2 + graph.distance((long)o2, end));
+            if (c < 0) {
+                return -1;
+            } else if (c > 0) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+
     /**
      * Return a List of longs representing the shortest path from the node
      * closest to a start location and the node closest to the destination
@@ -25,7 +52,61 @@ public class Router {
      */
     public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
                                           double destlon, double destlat) {
-        return null; // FIXME
+        //Get ID of start and end position.
+        start = g.closest(stlon, stlat);
+        end = g.closest(destlon, destlat);
+        graph = g;
+        disToStart.put(start, 0.0);
+
+        astar<Long> comparator = new astar<>();
+        PriorityQueue<Long> pq = new PriorityQueue<Long>(comparator);
+        Stack<Long> shortestPath = new Stack<>();
+        List<Long> ret = new ArrayList<>();
+        Set<Long> hasReached = new HashSet<>();
+
+        long current = start; //store which node we are at.
+        pq.add(current);
+
+        while (!pq.isEmpty() && current != end) {
+            current = pq.remove();
+            hasReached.add(current); //mark it.
+
+            for (long neighbor : g.adjacent(current)) {
+                //Avoid tracing back.
+                if (edgeTo.containsKey(current) && edgeTo.get(current) == neighbor) {
+                    continue;
+                }
+                //Avoid repeating
+                if (hasReached.contains(neighbor)) {
+                    continue;
+                }
+
+                //Calculate the distance from certain neighbor to start.
+                double disTo = disToStart.get(current) + g.distance(neighbor, current);
+                if (disToStart.containsKey(neighbor)) { //neighbor has been memorized.
+                    double origin = disToStart.get(neighbor);
+                    if (origin < disTo) { //no change will happen.
+                        continue;
+                    }
+                }
+                edgeTo.put(neighbor, current);
+                disToStart.put(neighbor, disTo);
+                pq.add(neighbor);
+            }
+        }
+
+        // build path in stack
+        while (current != start) {
+            shortestPath.push(current);
+            current = edgeTo.get(current);
+        }
+        shortestPath.push(start);
+        // reverse it to the normal state.
+        while (!shortestPath.isEmpty()) {
+            ret.add(shortestPath.pop());
+        }
+
+        return ret;
     }
 
     /**
@@ -37,9 +118,74 @@ public class Router {
      * route.
      */
     public static List<NavigationDirection> routeDirections(GraphDB g, List<Long> route) {
-        return null; // FIXME
+        List<NavigationDirection> guideLines = new ArrayList<>();
+        long start = route.get(0);
+        long prevNode = start;
+        NavigationDirection step = new NavigationDirection();
+        String wayName = "";
+        double prevBearing = 0.0;
+        double bearing;
+
+        for (long node : route) {
+            //it's just the beginning
+            if (node == start) {
+                continue;
+            }
+
+            double currentDis = g.findEdgeWeight(prevNode, node);
+            String currentWay = g.findWayName(prevNode, node);
+            double currentBearing = g.bearing(prevNode, node);
+
+            if (currentWay == "" || currentWay == null) { //deal with the unknown road.
+                currentWay = NavigationDirection.UNKNOWN_ROAD;
+            }
+
+            //determine the path to begin with. nice english!
+            if (prevNode == start) {
+                wayName = currentWay;
+                step.way = wayName;
+                step.direction = NavigationDirection.START;
+            } else { //deal with normal situation where prevNode is not start.
+                if (!currentWay.equals(wayName)) { //represent a change in the way.
+                    guideLines.add(step);
+                    step = new NavigationDirection();
+
+                    step.direction = getDirection(prevBearing, currentBearing); //prevBearing should be initialized?
+                    step.way = currentWay;
+                    wayName = currentWay; //almost forget it!
+                }
+            }
+            step.distance += currentDis;
+            prevNode = node;
+            prevBearing = currentBearing;
+        }
+        guideLines.add(step); //almost forget to add the last Navigation!
+
+        return guideLines;
     }
 
+    /** Get direction from bearing angle. */
+    private static int getDirection(double prev, double current) { //weird that every method should be static?
+        int dir;
+        double bearing = current - prev;
+
+        //adjust bearing when its abs is larger than 180
+        //it's quite important!
+        //and to be honest I haven't understand it fully.
+        if (bearing >= 180 || bearing <= -180) {
+            bearing = bearing > 0 ? Math.abs(bearing) - 360 : 360 - Math.abs(bearing);
+        }
+        if (bearing <= 15 && bearing >= -15) {
+            dir = NavigationDirection.STRAIGHT;
+        } else if (bearing <= 30 && bearing >= -30) {
+            dir = bearing < 0 ? NavigationDirection.SLIGHT_LEFT : NavigationDirection.SLIGHT_RIGHT;
+        } else if (bearing <= 100 && bearing >= -100) {
+            dir = bearing < 0 ? NavigationDirection.LEFT : NavigationDirection.RIGHT;
+        } else {
+            dir = bearing < 0 ? NavigationDirection.SHARP_LEFT : NavigationDirection.SHARP_RIGHT;
+        }
+        return dir;
+    }
 
     /**
      * Class to represent a navigation direction, which consists of 3 attributes:
